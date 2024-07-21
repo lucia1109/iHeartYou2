@@ -1,0 +1,32 @@
+{
+  "blogs": [
+    {
+      "id": "fe00",
+      "Age": "12",
+      "Sex": "Female",
+      "Height": "45",
+      "Education": "Schooling",
+      "Marital": "Single",
+      "Income": "Single",
+      "Cholestrol": "Yes",
+      "Diabetes": "Yes",
+      "Bloodpressure": "Yes",
+      "Alcohol": "Yes",
+      "Smoke": ""
+    },
+    {
+      "id": "e9b1",
+      "Age": "78",
+      "Sex": "male",
+      "Height": "189",
+      "Education": "studying",
+      "Marital": "Married",
+      "Income": "2",
+      "Cholestrol": "Yes",
+      "Diabetes": "Yes",
+      "Bloodpressure": "Yes",
+      "Alcohol": "Yes",
+      "Smoke": ""
+    }
+  ]
+}
