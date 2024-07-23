@@ -1,7 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { onSnapshot, collection } from 'firebase/firestore';
+import { useEffect, useState } from "react";
+import db from "./firebase";
+
 const BlogList = ({ blogs }) => {
+
+  const [userData, setUserData] = useState([]);
+ 
+  console.log(userData);
+  useEffect(
+    () => 
+      onSnapshot(collection(db, "userData"), (snapshot) =>
+        setUserData(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
+      ),
+
+    []
+  );
+
   return (
     <table>
       <thead>
@@ -13,18 +30,19 @@ const BlogList = ({ blogs }) => {
           <th>Marital status</th>
           <th>Income</th>
           <th>Cholestrol</th>
-          <th>Education</th>
+          <th>Alcohol</th>
           <th>Diabetes</th>
           <th>Blood Pressure</th>
-          <th>Date</th>
+          <th>Smoke</th>
 
         </tr>
       </thead>
       <tbody>
+        {/* 
         {blogs.map(blog => (
           <tr key={blog.id}>
             
-            {/* <td><link to={`/records/${blog.id}`}>{blog.Age}</link></td> */}
+            <td>{blog.Age}</td>
             <td>{blog.Sex}</td>
             <td>{blog.Height}</td>
             <td>{blog.Education}</td>
@@ -37,6 +55,26 @@ const BlogList = ({ blogs }) => {
             
           </tr>
         ))}
+
+        */}
+
+        {userData.map((userData) => (
+          <tr key={userData.id}>
+            <td userData={userData.value}>{userData.Age}</td>
+            <td userData={userData.value}>{userData.Sex}</td>
+            <td userData={userData.value}>{userData.Height}</td>
+            <td userData={userData.value}>{userData.Education}</td>
+            <td userData={userData.value}>{userData.Marital_Status}</td>
+            <td userData={userData.value}>{userData.Income}</td>
+            <td userData={userData.value}>{userData.Cholestrol}</td>
+            <td userData={userData.value}>{userData.Education}</td>
+            <td userData={userData.value}>{userData.Diabetes}</td>
+            <td userData={userData.value}>{userData.Smoke}</td>
+            <td userData={userData.value}>{userData.Smoke}</td>
+
+          </tr>
+                    
+        ))} 
       </tbody>
     </table>
   );

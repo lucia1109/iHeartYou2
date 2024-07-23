@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import db from "./firebase";
 
 const Create = () => {
   const [Age, setAge] = useState('');
@@ -7,8 +9,8 @@ const Create = () => {
   const [Height, setHeight] = useState('');
   const [Education, setEducation] = useState('');
   const [Marital, setMarital] = useState('Single');
-  const [Income, setIncome] = useState('Single');
-  const [Cholestrol, setcholestrol] = useState('Yes');
+  const [Income, setIncome] = useState('');
+  const [Cholestrol, setCholestrol] = useState('Yes');
   const [Diabetes, setDiabetes] = useState('Yes');
   const [Bloodpressure, setBloodpressure] = useState('Yes');
   const [Alcohol, setAlcohol] = useState('Yes');
@@ -16,28 +18,28 @@ const Create = () => {
   const [isPending, setIsPending] = useState(false);
   const history = useHistory();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const blog = { Age, Sex, Height, Education, Marital, Income, Cholestrol, Diabetes, Bloodpressure, Alcohol, Smoke };
+    const blog = { Age, Sex, Height, Education, Marital, Income, Cholestrol, Diabetes, Bloodpressure, Alcohol, Smoke, createdAt: serverTimestamp() };
 
     setIsPending(true);
 
-    fetch('http://localhost:8000/blogs/', {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(blog)
-    }).then(() => {
-      console.log('new blog added');
+    try {
+      const colRef = collection(db, 'userData');
+      await addDoc(colRef, blog);
+      console.log('New blog added to Firestore');
       setIsPending(false);
-      //history.go(-1);
       history.push('/');
-    })
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      setIsPending(false);
+    }
   }
 
   return (
     <div className="create">
       <h2>Add a New Blog</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="add">
         <label>Age:</label>
         <input 
           type="text" 
@@ -82,16 +84,25 @@ const Create = () => {
           required 
           value={Income}
           onChange={(e) => setIncome(e.target.value)}
-        >
-        </input>
+        />
         <label>Have you ever been told you have high Cholestrol:</label>
         <select
           value={Cholestrol}
-          onChange={(e) => setcholestrol(e.target.value)}
+          onChange={(e) => setCholestrol(e.target.value)}
         >
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
+
+        <label>What was your alcohol consumption frequency this week:</label>
+        <select
+          value={Alcohol}
+          onChange={(e) => setAlcohol(e.target.value)}
+        >
+          <option value="1">+3</option>
+          <option value="2">3-5</option>
+        </select>
+
         <label>Have you ever been told you have high Diabetes:</label>
         <select
           value={Diabetes}
@@ -109,14 +120,6 @@ const Create = () => {
           <option value="No">No</option>
         </select>
 
-        <label>What was you alcohol consumption frequency this week:</label>
-        <select
-          value={Alcohol}
-          onChange={(e) => setAlcohol(e.target.value)}
-        >
-          <option value="1"> +3</option>
-          <option value="2">3-5</option>
-        </select>
 
         <label>How was your smoke frequency:</label>
         <select
@@ -126,11 +129,12 @@ const Create = () => {
           <option value="1">100</option>
           <option value="2">100+</option>
         </select>
+
         { !isPending && <button>Add Blog</button> }
         { isPending && <button disabled>Adding Blog</button> }
       </form>
     </div>
   );
 }
- 
+
 export default Create;

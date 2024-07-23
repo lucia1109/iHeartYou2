@@ -27,6 +27,20 @@
       "Bloodpressure": "Yes",
       "Alcohol": "Yes",
       "Smoke": ""
+    },
+    {
+      "id": "9529",
+      "Age": "12",
+      "Sex": "Female",
+      "Height": "5",
+      "Education": "",
+      "Marital": "Single",
+      "Income": "500",
+      "Cholestrol": "No",
+      "Diabetes": "No",
+      "Bloodpressure": "Yes",
+      "Alcohol": "Yes",
+      "Smoke": ""
     }
   ]
 }

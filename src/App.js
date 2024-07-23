@@ -7,6 +7,7 @@ import NotFound from './NotFound';
 import records from './Records';
 
 function App() {
+  
   return (
     <Router>
       <div className="App">
