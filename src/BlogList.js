@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { onSnapshot, collection } from 'firebase/firestore';
+import { onSnapshot, collection, query, orderBy } from 'firebase/firestore';
 import { useEffect, useState } from "react";
 import db from "./firebase";
 
@@ -9,68 +9,65 @@ const BlogList = ({ blogs }) => {
 
   const [userData, setUserData] = useState([]);
  
-  console.log(userData);
-  useEffect(
-    () => 
-      onSnapshot(collection(db, "userData"), (snapshot) =>
-        setUserData(snapshot.docs.map((doc) => ({...doc.data(), id: doc.id})))
-      ),
+  useEffect(() => {
+    // Create a query that orders by 'createdAt' in descending order
+    const q = query(collection(db, "userData"), orderBy("createdAt", "desc"));
 
-    []
-  );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setUserData(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate(); // Convert Firestore Timestamp to JavaScript Date
+    return date.toLocaleString(); // Format the date and time
+  };
+  
 
   return (
     <table>
       <thead>
         <tr>
-          <th>Age</th>
+          <th>   Age   </th>
           <th>Sex</th>
-          <th>Height</th>
-          <th>Education</th>
-          <th>Marital status</th>
-          <th>Income</th>
-          <th>Cholestrol</th>
-          <th>Alcohol</th>
+          <th>BMI</th>
+          <th>Exercise</th>
+          <th>Depression</th>
+          <th>Fruits</th>
+          <th>Vegetables</th>
           <th>Diabetes</th>
-          <th>Blood Pressure</th>
-          <th>Smoke</th>
-
+          <th>Skin cancer</th>
+          <th>Other cancer</th>
+          <th>Alcohol intake</th>
+          <th>Smoking levels</th>
+          <th>Created</th>
+          <th>Heart attack prediction</th>
         </tr>
       </thead>
       <tbody>
-        {/* 
-        {blogs.map(blog => (
-          <tr key={blog.id}>
-            
-            <td>{blog.Age}</td>
-            <td>{blog.Sex}</td>
-            <td>{blog.Height}</td>
-            <td>{blog.Education}</td>
-            <td>{blog.Marital}</td>
-            <td>{blog.Income}</td>
-            <td>{blog.Cholestrol}</td>
-            <td>{blog.Diabetes}</td>
-            <td>{blog.Bloodpressure}</td>
-            <td>{new Date(blog.date).toLocaleDateString()}</td>
-            
-          </tr>
-        ))}
 
-        */}
 
         {userData.map((userData) => (
           <tr key={userData.id}>
             <td userData={userData.value}>{userData.Age}</td>
             <td userData={userData.value}>{userData.Sex}</td>
-            <td userData={userData.value}>{userData.Height}</td>
-            <td userData={userData.value}>{userData.Education}</td>
-            <td userData={userData.value}>{userData.Marital_Status}</td>
-            <td userData={userData.value}>{userData.Income}</td>
-            <td userData={userData.value}>{userData.Cholestrol}</td>
-            <td userData={userData.value}>{userData.Education}</td>
+            <td userData={userData.value}>{userData.BMI}</td>
+            <td userData={userData.value}>{userData.Exercise}</td>
+            <td userData={userData.value}>{userData.Depression}</td>
+            <td userData={userData.value}>{userData.Fruits}</td>
+            <td userData={userData.value}>{userData.Vegetables}</td>
             <td userData={userData.value}>{userData.Diabetes}</td>
+            <td userData={userData.value}>{userData.Skin_cancer}</td>
+            <td userData={userData.value}>{userData.Other_cancer}</td>
+            <td userData={userData.value}>{userData.Alcohol}</td>
             <td userData={userData.value}>{userData.Smoke}</td>
-            <td userData={userData.value}>{userData.Smoke}</td>
+            <td>{formatDate(userData.createdAt)}</td>
+            <td></td>
+            
 
           </tr>
                     
